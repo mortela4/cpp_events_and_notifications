@@ -1,5 +1,6 @@
 #include "TestWorker.h"
-#include "Event.h"
+#include "event.h"
+#include "delegate.h"
 
 #include <functional>
 #include <iostream>
@@ -16,16 +17,19 @@ namespace monitor_ex
 
 	TestWorker::~TestWorker()
 	{
-		// TODO Auto-generated destructor stub
+		const notification_event::Event event{"TestWorker", _name, "dtor: removing handler from delegate after this!"};
+
+		_notifier.Invoke(event);
+		_notifier.RemoveAllHandlers();
 	}
 
 	void TestWorker::Attach(std::function<void(const notification_event::Event&)> notifyFunc)
 	{
-		_notifier = notifyFunc;
+		_notifier.AddHandler(notifyFunc);
 
-		const notification_event::Event event{"TestWorker", _name, "attached!"};
+		const notification_event::Event event{"TestWorker", _name, "attached handler to delegate!"};
 
-		_notifier(event);
+		_notifier.Invoke(event);
 	}
 
 	void TestWorker::Run(void)
@@ -34,7 +38,7 @@ namespace monitor_ex
 		isRunning = true;
 		const notification_event::Event event{"TestWorker", _name, "running!"};
 
-		_notifier(event);
+		_notifier.Invoke(event);
 	}
 
 	void TestWorker::Stop(void)
@@ -43,7 +47,7 @@ namespace monitor_ex
 		isRunning = false;
 		const notification_event::Event event{"TestWorker", _name, "stopped!"};
 
-		_notifier(event);
+		_notifier.Invoke(event);
 	}
 
 	void TestWorker::SetCapacity(int newCapacity)

@@ -17,10 +17,14 @@
 #ifndef DELEGATE_INCLUDE
 #define DELEGATE_INCLUDE
 
+#define DELEGATE_SINGLETHREADED		// NOTE: set by user!!
+
+
 #ifndef DELEGATE_SINGLETHREADED
 #define DELEGATE_MULTITHREADED
 #endif
 
+#include <stdint.h>
 #include <functional>
 #include <map>
 
@@ -32,7 +36,7 @@
 #ifdef DELEGATE_MULTITHREADED
 #define DELEGATE_ID_TYPE std::atomic_uint64_t
 #else
-#define DELEGATE_ID_TYPE std::uint64_t
+#define DELEGATE_ID_TYPE uint64_t
 #endif
 
 template<typename ... T>
